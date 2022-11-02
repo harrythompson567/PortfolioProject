@@ -1,0 +1,456 @@
+-- Create Employee Demographics Table -------------------------------------------------------------------------------------------------------------
+Create Table EmployeeDemographics 
+(EmployeeID int, 
+FirstName varchar(50), 
+LastName varchar(50), 
+Age int, 
+Gender varchar(50)
+)
+
+-- Create Employee Salary Table -------------------------------------------------------------------------------------------------------------
+Create Table EmployeeSalary 
+(EmployeeID int, 
+JobTitle varchar(50), 
+Salary int
+)
+
+-- Insert Data into Employee Demographics -------------------------------------------------------------------------------------------------------------
+Insert into EmployeeDemographics VALUES
+(1001, 'Jim', 'Halpert', 30, 'Male'),
+(1002, 'Pam', 'Beasley', 30, 'Female'),
+(1003, 'Dwight', 'Schrute', 29, 'Male'),
+(1004, 'Angela', 'Martin', 31, 'Female'),
+(1005, 'Toby', 'Flenderson', 32, 'Male'),
+(1006, 'Michael', 'Scott', 35, 'Male'),
+(1007, 'Meredith', 'Palmer', 32, 'Female'),
+(1008, 'Stanley', 'Hudson', 38, 'Male'),
+(1009, 'Kevin', 'Malone', 31, 'Male')
+
+-- Insert Data into Employee Salary -------------------------------------------------------------------------------------------------------------
+Insert Into EmployeeSalary VALUES
+(1001, 'Salesman', 45000),
+(1002, 'Receptionist', 36000),
+(1003, 'Salesman', 63000),
+(1004, 'Accountant', 47000),
+(1005, 'HR', 50000),
+(1006, 'Regional Manager', 65000),
+(1007, 'Supplier Relations', 41000),
+(1008, 'Salesman', 48000),
+(1009, 'Accountant', 42000)
+
+-- Distinct, Count, Min, Max and AVG functions -------------------------------------------------------------------------------------------------------------
+SELECT DISTINCT(Gender)
+FROM EmployeeDemographics
+
+SELECT COUNT(LastName) AS LastNameCount
+FROM EmployeeDemographics
+
+SELECT MAX(Salary)
+FROM EmployeeSalary
+
+SELECT MIN(Salary)
+FROM EmployeeSalary
+
+SELECT AVG(Salary)
+FROM EmployeeSalary
+
+-- If calling a table from a different database, use the following FROM structure database.dbo.tablename
+SELECT *
+FROM TestDb.dbo.EmployeeDemographics
+
+-- WHERE Clause -------------------------------------------------------------------------------------------------------------
+SELECT *
+FROM EmployeeDemographics
+WHERE FirstName = 'Jim'
+
+SELECT *
+FROM EmployeeDemographics
+WHERE FirstName <> 'Jim'
+
+SELECT *
+FROM EmployeeDemographics
+WHERE Age > 30
+
+SELECT *
+FROM EmployeeDemographics
+WHERE Age >= 30
+
+SELECT *
+FROM EmployeeDemographics
+WHERE Age <= 32 AND Gender = 'Male'
+
+SELECT *
+FROM EmployeeDemographics
+WHERE Age <= 32 OR Gender = 'Male'
+
+SELECT *
+FROM EmployeeDemographics
+WHERE LastName LIKE 'S%'
+
+SELECT *
+FROM EmployeeDemographics
+WHERE LastName LIKE '%S%'
+
+SELECT *
+FROM EmployeeDemographics
+WHERE LastName LIKE 'S%o%'
+
+SELECT *
+FROM EmployeeDemographics
+WHERE FirstName IS NULL
+
+SELECT *
+FROM EmployeeDemographics
+WHERE FirstName IS NOT NULL
+
+SELECT *
+FROM EmployeeDemographics
+WHERE FirstName IN ('Jim', 'Michael', 'Kevin')
+
+-- Group By -------------------------------------------------------------------------------------------------------------
+SELECT Gender
+    ,COUNT(Gender) AS GenderCount
+FROM EmployeeDemographics
+GROUP BY Gender
+
+SELECT Gender
+    ,Age
+    ,COUNT(Gender) AS GenderCount
+FROM EmployeeDemographics
+GROUP BY Gender, Age
+
+SELECT Gender
+    ,Age
+    ,COUNT(Gender) AS GenderCount
+FROM EmployeeDemographics
+WHERE Age > 31
+GROUP BY Gender, Age
+
+-- Order By
+SELECT *
+FROM EmployeeDemographics
+ORDER BY Age
+
+SELECT Gender
+    ,COUNT(Gender) AS GenderCount
+FROM EmployeeDemographics
+GROUP BY Gender
+ORDER BY GenderCount DESC
+
+SELECT *
+FROM EmployeeDemographics
+ORDER BY Age, Gender
+
+SELECT *
+FROM EmployeeDemographics
+ORDER BY Age, Gender DESC
+
+SELECT *
+FROM EmployeeDemographics
+ORDER BY Age DESC, Gender DESC
+
+SELECT *
+FROM EmployeeDemographics
+ORDER BY 4 DESC, 5 DESC
+
+-- Joins -------------------------------------------------------------------------------------------------------------
+-- Before doing Joins, add extra data into tables
+INSERT INTO EmployeeDemographics VALUES
+(1011, 'Ryan', 'Howard', 26, 'Male'),
+(NULL, 'Holly', 'Flax', NULL, NULL),
+(1013, 'Darryl', 'Philbin', NULL, 'Male')
+
+INSERT INTO EmployeeSalary VALUES
+(1010, NULL, 47000)
+,(NULL, 'Salesman', 43000)
+
+CREATE TABLE WareHouseEmployeeDemographics 
+(EmployeeID int, 
+FirstName varchar(50), 
+LastName varchar(50), 
+Age int, 
+Gender varchar(50)
+)
+
+INSERT INTO WareHouseEmployeeDemographics VALUES
+(1013, 'Darryl', 'Philbin', NULL, 'Male'),
+(1050, 'Roy', 'Anderson', 31, 'Male'),
+(1051, 'Hidetoshi', 'Hasagawa', 40, 'Male'),
+(1052, 'Val', 'Johnson', 31, 'Female')
+
+SELECT *
+FROM EmployeeDemographics
+
+SELECT *
+FROM EmployeeSalary
+
+-- Inner Join, only shows things which are common in both tables
+SELECT *
+FROM EmployeeDemographics
+INNER JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID 
+
+-- Full Outer Join, NULL is assigned to values which do not have a match
+SELECT *
+FROM EmployeeDemographics
+FULL OUTER JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+-- Left Outer Join, keeps everything from left (first table) and only shows data with matching data from right (second) table 
+-- or fills right table columns with NULLS for the employeeID values which are present in left table but not in the right
+SELECT *
+FROM EmployeeDemographics
+LEFT OUTER JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+-- Right Outer Join, keeps everything from right (second table) and only shows data with matching data from left (first) table
+-- or fills left table columns with NULLS for the employeeID values which are present in right table but not in the left
+SELECT *
+FROM EmployeeDemographics
+RIGHT OUTER JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+-- Selecting certain columns for Joins
+SELECT EmployeeDemographics.EmployeeID
+    ,FirstName
+    ,LastName
+    ,JobTitle
+    ,Salary
+FROM EmployeeDemographics
+INNER JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+SELECT EmployeeDemographics.EmployeeID
+    ,FirstName
+    ,LastName
+    ,JobTitle
+    ,Salary
+FROM EmployeeDemographics
+RIGHT OUTER JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+SELECT EmployeeDemographics.EmployeeID
+    ,FirstName
+    ,LastName
+    ,JobTitle
+    ,Salary
+FROM EmployeeDemographics
+LEFT OUTER JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+-- Unions -------------------------------------------------------------------------------------------------------------
+SELECT *
+FROM EmployeeDemographics
+UNION
+SELECT *
+FROM WareHouseEmployeeDemographics
+
+SELECT *
+FROM EmployeeDemographics
+UNION ALL
+SELECT *
+FROM WareHouseEmployeeDemographics
+ORDER BY EmployeeID
+
+-- Case Expression -------------------------------------------------------------------------------------------------------------
+SELECT FirstName
+    ,LastName
+    ,Age
+    ,CASE
+        WHEN Age > 30 THEN 'Old'
+        ELSE 'Young'
+    END
+FROM EmployeeDemographics
+WHERE Age IS NOT NULL
+ORDER BY Age
+
+SELECT FirstName
+    ,LastName
+    ,Age
+    ,CASE
+        WHEN Age > 30 THEN 'Old'
+        WHEN Age BETWEEN 27 AND 30 THEN 'Young'
+        ELSE 'Baby'
+    END
+FROM EmployeeDemographics
+WHERE Age IS NOT NULL
+ORDER BY Age
+
+SELECT FirstName
+    ,LastName
+    ,Age
+    ,CASE
+        WHEN Age > 30 THEN 'Old'
+        WHEN Age = 38 THEN 'Stanley'    -- This won't show as the condition has already been met in the Age > 30 case. The first case has precedence
+        ELSE 'Baby'
+    END
+FROM EmployeeDemographics
+WHERE Age IS NOT NULL
+ORDER BY Age
+
+SELECT FirstName
+    ,LastName
+    ,Age
+    ,CASE
+        WHEN Age = 38 THEN 'Stanley'    -- Now this is shown as this condition is met first
+        WHEN Age > 30 THEN 'Old'
+        ELSE 'Baby'
+    END
+FROM EmployeeDemographics
+WHERE Age IS NOT NULL
+ORDER BY Age
+
+-- Case to apply pay rise dependent on job role
+SELECT FirstName
+    ,LastName
+    ,JobTitle
+    ,Salary
+    ,CASE
+        WHEN JobTitle = 'Salesman' THEN Salary + (Salary * .10)
+        WHEN JobTitle = 'Accountant' THEN Salary + (Salary * .05)
+        WHEN JobTitle = 'HR' THEN Salary + (Salary * .00001)
+        ELSE Salary + (Salary * .03)
+    END AS SalaryAfterRaise
+FROM EmployeeDemographics
+JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+
+-- Having Clause -------------------------------------------------------------------------------------------------------------
+SELECT JobTitle
+    ,COUNT(JobTitle)
+FROM EmployeeDemographics
+JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+GROUP BY JobTitle
+HAVING COUNT(JobTitle) > 1      -- Having statement must come after group by
+
+SELECT JobTitle
+    ,AVG(Salary)
+FROM EmployeeDemographics
+JOIN EmployeeSalary
+    ON EmployeeDemographics.EmployeeID = EmployeeSalary.EmployeeID
+GROUP BY JobTitle
+HAVING AVG(Salary) > 45000
+ORDER BY AVG(Salary)
+
+-- Updating Data -------------------------------------------------------------------------------------------------------------
+SELECT * 
+FROM EmployeeDemographics
+
+UPDATE EmployeeDemographics
+SET EmployeeID = 1012
+    ,Age = 31
+    ,Gender = 'Female'
+WHERE FirstName = 'Holly' AND LastName = 'Flax'
+
+-- Deleting Data -------------------------------------------------------------------------------------------------------------
+SELECT *                    -- Good to use a select statement in place of delete, to first show what will be deleted
+FROM EmployeeDemographics
+WHERE EmployeeID = 1005
+
+DELETE 
+FROM EmployeeDemographics
+WHERE EmployeeID = 1005
+
+-- INSERT INTO EmployeeDemographics VALUES
+-- (1005, 'Toby', 'Flenderson', 32, 'Male')
+
+-- Aliasing -------------------------------------------------------------------------------------------------------------
+SELECT FirstName AS Fname
+FROM EmployeeDemographics
+
+SELECT FirstName Fname
+FROM EmployeeDemographics
+
+SELECT FirstName + ' ' + LastName AS FullName
+FROM EmployeeDemographics
+
+SELECT AVG (Age) AS AvgAge
+FROM EmployeeDemographics
+
+-- Aliasing Table Name
+SELECT Demo.EmployeeID
+FROM EmployeeDemographics AS Demo
+JOIN EmployeeSalary AS Sal
+    ON Demo.EmployeeID = Sal.EmployeeID
+
+SELECT Demo.EmployeeID
+    ,Demo.FirstName
+    ,Demo.LastName
+    ,Sal.JobTitle
+    ,Ware.Age
+FROM EmployeeDemographics Demo
+LEFT JOIN EmployeeSalary Sal
+    ON Demo.EmployeeID = Sal.EmployeeID
+LEFT JOIN WareHouseEmployeeDemographics Ware
+    ON Demo.EmployeeID = Ware.EmployeeID
+
+-- Parition By -------------------------------------------------------------------------------------------------------------
+-- allows you to have a column with an aggregate function without having to remove other columns and using group by on just the intended catagory
+SELECT FirstName
+    ,LastName
+    ,Gender
+    ,Salary
+    ,COUNT(Gender) OVER (PARTITION BY Gender) AS TotalGender
+FROM EmployeeDemographics dem
+JOIN EmployeeSalary sal
+    ON dem.EmployeeID = sal.EmployeeID
+
+
+-- CTE (Common Table Expression) -------------------------------------------------------------------------------------------------------------
+-- Named temporary results set, it only exists in the scope of the statement and is only created in memory
+WITH CTE_Employee AS 
+(SELECT FirstName
+    ,LastName
+    ,Gender
+    ,Salary
+    ,COUNT(Gender) OVER (PARTITION BY Gender) as TotalGender
+    ,AVG(Salary) OVER (PARTITION BY Gender) as AvgSalary
+FROM EmployeeDemographics dem
+JOIN EmployeeSalary sal
+    ON dem.EmployeeID = sal.EmployeeID
+WHERE Salary > 45000
+)
+SELECT *
+FROM CTE_Employee
+
+-- Temp Tables -------------------------------------------------------------------------------------------------------------
+-- Use # to create temp table rather than a normal table
+CREATE TABLE #temp_Employee(
+    EmployeeID INT
+    ,JobTitle varchar(100)
+    ,Salary INT
+)
+
+SELECT *
+FROM #temp_Employee
+
+INSERT INTO #temp_Employee VALUES(
+    '1001', 'HR', '45000'
+)
+
+INSERT INTO #temp_Employee
+SELECT *
+FROM EmployeeSalary
+
+DROP TABLE IF EXISTS #temp_Employee2
+CREATE TABLE #temp_Employee2(
+    JobTitle nvarchar(50)
+    ,EmployeesPerJob INT
+    ,AvgAge INT
+    ,AvgSalary INT
+)
+
+INSERT INTO #temp_Employee2
+SELECT JobTitle
+    ,COUNT(JobTitle)
+    ,AVG(Age)
+    ,AVG(Salary)
+FROM EmployeeDemographics dem
+JOIN EmployeeSalary sal
+    ON dem.EmployeeID = sal.EmployeeID
+GROUP BY JobTitle
+
+SELECT *
+FROM #temp_Employee2
+
